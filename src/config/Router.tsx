@@ -1,22 +1,23 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-// import Navbar from "./Navbar";
+import Navbar from "./Navbar";
 // import Footer from "../components/Footer";
 
 const Home = lazy(() => import("../pages/home"));
-const BookDetails = lazy(() => import("../pages/bookDetails"));
+const Register = lazy(() => import("../pages/register"));
 
 const Layout = () => {
 	return (
 		<>
-			{/* <Navbar /> */}
+			
 			<div
 				className="flex flex-col "
-				// style={{ height: "100vh", width: "100vw" }}
+				
 			>
+				<Navbar />
 				<Routes>
 					<Route path="/" element={<Home />} />
-					<Route path="/book-details" element={<BookDetails />} />
+					<Route path="/Register" element={<Register />} />
 				</Routes>
 			</div>
 			{/* <Footer /> */}

@@ -4,7 +4,7 @@ import "./index.css";
 import App from "./App.tsx";
 import 'primereact/resources/themes/lara-light-blue/theme.css'
 
-import { PrimeReactProvider, PrimeReactContext } from "primereact/api";
+import { PrimeReactProvider } from "primereact/api";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

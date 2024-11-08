@@ -1,16 +1,10 @@
+import "./App.css";
+import Router from "./config/Router";
+import 'primeicons/primeicons.css';
 
-import './App.css'
-import Router from "./config/Router"
 
 function App() {
- 
-
-  return (
- 
-    <Router/>
-   
-   
-  )
+  return <Router />;
 }
 
-export default App
+export default App;
