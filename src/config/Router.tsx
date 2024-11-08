@@ -5,25 +5,27 @@ import Navbar from "./Navbar";
 
 const Home = lazy(() => import("../pages/home"));
 const Register = lazy(() => import("../pages/register"));
+const User = lazy(() => import("../pages/userProfile"));
 
 const Layout = () => {
-	return (
-		<>
-			
-			<div
-				className="flex flex-col "
-				
-			>
-				<Navbar />
-				<Routes>
-					<Route path="/" element={<Home />} />
-					<Route path="/Register" element={<Register />} />
-				</Routes>
-			</div>
-			{/* <Footer /> */}
-		</>
-	);
+  return (
+    <>
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <div className="flex-grow bg-gray-100 ">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/userProfile" element={<User />} />
+          </Routes>
+        </div>
+      </div>
+
+    </>
+  );
 };
+
+
 
 const Router = () => {
 	return (

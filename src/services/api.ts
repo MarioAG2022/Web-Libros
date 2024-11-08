@@ -9,7 +9,7 @@ const BASE_URL = 'https://openlibrary.org/search.json?';
 export default class ApiService {
   // Método para obtener libros por título
   async fetchBooksByTitle(query: string, page: number ): Promise<Book[]> {
-    const url = `${BASE_URL}q=${encodeURIComponent(query)}&fields=version,author_name,cover_i,edition_count,first_publish_year,key,editions,editions.language,title&limit=30&page=${page}`;
+    const url = `${BASE_URL}q=${encodeURIComponent(query)}&fields=version,author_name,cover_i,edition_count,first_publish_year,key,editions,editions.language,title&limit=15&page=${page}`;
     
     try {
       const response = await axios.get(url);
@@ -21,7 +21,7 @@ export default class ApiService {
 
   // Método para obtener libros por autor
   async fetchBooksByAuthor(query: string, page: number ): Promise<Book[]> {
-    const url = `${BASE_URL}author=${encodeURIComponent(query)}&q&sort=new&fields=version,author_name,cover_i,first_publish_year,key,title&limit=30&page=${page}`;
+    const url = `${BASE_URL}author=${encodeURIComponent(query)}&q&sort=new&fields=version,author_name,cover_i,first_publish_year,key,title&limit=15&page=${page}`;
     
     try {
       const response = await axios.get(url);

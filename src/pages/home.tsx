@@ -7,6 +7,7 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import ApiService from "../services/api";
 import { Book } from "../types/interfaces";
 import banner from "../assets/banner.svg";
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 const apiService = new ApiService();
 
@@ -18,7 +19,6 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
-  const [isImageLoading, setIsImageLoading] = useState(true);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   useEffect(() => {
@@ -39,6 +39,7 @@ export default function Home() {
       fetchBooks(currentPage);
     }
   }, [currentPage]);
+  
   useEffect(() => {
     const img = new Image();
     img.src = banner;
@@ -67,7 +68,6 @@ export default function Home() {
   const openSidebar = (book: Book) => {
     setSelectedBook(book);
     setIsSidebarVisible(true);
-    setIsImageLoading(true); // Reinicia la carga de la imagen
   };
 
   const header = (
@@ -106,7 +106,7 @@ export default function Home() {
       : null;
     return (
       <div
-        className="p-4 flex flex-col items-center bg-white rounded-lg shadow-lg border border-gray-200 cursor-pointer"
+        className="p-4 flex flex-col items-center bg-white rounded-lg shadow-lg border border-gray-200 cursor-pointer m-2"
         onClick={() => openSidebar(book)}
       >
         {coverUrl ? (
@@ -145,10 +145,17 @@ export default function Home() {
     { breakpoint: "560px", numVisible: 1, numScroll: 1 },
   ];
 
+   //Header del sliderbar
+  const customHeader = (
+    <div className="flex align-items-center gap-2">
+        <h2 className="text-xl font-semibold text-center text-gray-800 mb-4">Detalles del Libro</h2>
+    </div>
+);
+
   return (
     <div className="">
       <div
-      className={`bg-cover bg-center bg-no-repeat h-96 flex items-center justify-center mb-8 rounded-lg transition-opacity duration-1000 ${
+      className={`bg-cover bg-center bg-no-repeat h-60 md:h-96 flex items-center justify-center mb-4  transition-opacity duration-1000 ${
         isImageLoaded ? 'opacity-100' : 'opacity-0'
       }`}
       style={{ backgroundImage: `url(${banner})` }} // Usa la imagen importada como fondo
@@ -168,7 +175,7 @@ export default function Home() {
             className="mb-6"
           />
           {books.length > 0 && (
-            <div className="flex justify-center items-center gap-4 mt-4">
+            <div className="flex justify-center items-center gap-4 my-4 ">
               <Button
                 icon="pi pi-angle-left"
                 onClick={handlePrevPage}
@@ -191,53 +198,70 @@ export default function Home() {
         </>
       )}
 
-      <Sidebar
-        visible={isSidebarVisible}
-        position="right"
-        onHide={() => setIsSidebarVisible(false)}
-        style={{ width: "30vw" }}
-        className="p-sidebar-lg"
-      >
-        {selectedBook ? (
-          <div className="p-4 flex flex-col items-center">
-            {selectedBook.cover_i ? (
-              isImageLoading ? (
-                <ProgressSpinner style={{ width: "50px", height: "50px" }} />
-              ) : null
-            ) : (
-              <div className="w-24 h-36 bg-gray-200 flex items-center justify-center text-gray-600 rounded-md mb-4">
-                No disponible
-              </div>
-            )}
-            {selectedBook.cover_i && (
-              <img
+<Sidebar
+    visible={isSidebarVisible}
+    position="right"
+    onHide={() => setIsSidebarVisible(false)}
+    style={{ width: '30vw' }}
+    className="p-sidebar-lg"
+    header={customHeader}
+>
+    {selectedBook && (
+        <div className="p-6 flex flex-col items-center space-y-4 bg-gray-50 rounded-lg shadow-2xl">
+            {/* Imagen de Portada */}
+            <LazyLoadImage
                 src={`https://covers.openlibrary.org/b/id/${selectedBook.cover_i}-L.jpg`}
                 alt={selectedBook.title}
-                className={`w-32 h-48 object-cover rounded-md mb-4 ${
-                  isImageLoading ? "hidden" : "block"
-                }`}
-                onLoad={() => setIsImageLoading(false)}
-              />
+                className="w-40 h-56 object-cover rounded-md shadow-md mb-4 animate-fade-in"
+                effect="opacity"
+            />
+
+            {/* Título */}
+            <h3 className="text-3xl font-bold text-center text-gray-800 mb-2">{selectedBook.title}</h3>
+
+            {/* Autor */}
+            <div className="text-center mb-2">
+                <p className="text-lg font-semibold text-gray-600">Autor:</p>
+                <p className="text-md text-gray-700">{selectedBook.author_name?.join(', ') || 'Desconocido'}</p>
+            </div>
+
+            {/* Año de Publicación */}
+            {selectedBook.first_publish_year && (
+                <div className="text-center mb-2">
+                    <p className="text-lg font-semibold text-gray-600">Año de Publicación:</p>
+                    <p className="text-md text-gray-700">{selectedBook.first_publish_year}</p>
+                </div>
             )}
-            <h3 className="text-2xl font-bold mb-2">{selectedBook.title}</h3>
-            <p className="text-lg text-gray-700 mb-1">
-              Autor: {selectedBook.author_name?.join(", ") || "Desconocido"}
-            </p>
-            <p className="text-lg text-gray-700 mb-1">
-              Año de publicación:{" "}
-              {selectedBook.first_publish_year || "Desconocido"}
-            </p>
-            <p className="text-lg text-gray-700 mb-1">
-              Ediciones: {selectedBook.edition_count || "N/A"}
-            </p>
-            <p className="text-lg text-gray-700 mb-1">
-              Idiomas: {selectedBook.editions_language?.join(", ") || "N/A"}
-            </p>
-          </div>
-        ) : (
-          <ProgressSpinner />
-        )}
-      </Sidebar>
+
+            {/* Número de Ediciones */}
+            <div className="text-center mb-2">
+                <p className="text-lg font-semibold text-gray-600">Número de Ediciones:</p>
+                <p className="text-md text-gray-700">{selectedBook.edition_count || 'N/A'}</p>
+            </div>
+
+            {/* Idiomas */}
+            {selectedBook.editions && selectedBook.editions.docs.length > 0 && (
+                <div className="text-center mb-2">
+                    <p className="text-lg font-semibold text-gray-600">Idiomas Disponibles:</p>
+                    <p className="text-md text-gray-700">
+                        {selectedBook.editions.docs.map(doc => doc.language?.join(', ')).join(', ') || 'N/A'}
+                    </p>
+                </div>
+            )}
+
+            {/* Separador */}
+            <hr className="w-full border-gray-300 my-4" />
+
+            {/* Información adicional */}
+            <div className="text-center text-sm text-gray-500">
+                <p>
+                    Más detalles y ediciones de <span className="font-semibold">{selectedBook.title}</span> pueden estar
+                    disponibles en el sitio de Open Library.
+                </p>
+            </div>
+        </div>
+    )}
+</Sidebar>
     </div>
   );
 }
