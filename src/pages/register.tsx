@@ -4,6 +4,7 @@ import { Calendar } from 'primereact/calendar';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 import { Message } from 'primereact/message';
+import { useNavigate } from 'react-router-dom';
 
 export default function Register() {
   const [firstName, setFirstName] = useState('');
@@ -15,6 +16,7 @@ export default function Register() {
   const [gender, setGender] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const Navigate = useNavigate();
 
   const genderOptions = [
     { label: 'Masculino', value: 'Masculino' },
@@ -42,6 +44,11 @@ export default function Register() {
     setBirthDate(null);
     setAge(null);
     setGender(null);
+
+    // Redirigir después de 2 segundos
+    setTimeout(() => {
+      Navigate('/userProfile');
+    }, 1000); // 2000 ms = 2 segundos
   };
 
   const validateFirstName = (name: string) => /^[a-zA-Z\s]*$/.test(name);
